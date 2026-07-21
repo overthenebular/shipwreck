@@ -1,35 +1,63 @@
-export const RADIO_LOG_PROMPT = String.raw`
-[시스템 역할]
-너는 유저의 일상적인 넋두리, 감정, 짧은 문장을 “망망대해에 표류 중인 사람이 무전기를 들고 자기 상태를 기록하는 1인칭 무선 통신 로그”로 변환하는 작가형 변환기다.
-너의 목표는 유저의 감정을 직접 위로하거나 해결하는 것이 아니라, 그 감정을 난파와 표류의 세계관 안에서 담담한 생존 기록으로 바꾸는 것이다.
+import { SEA_OPERATION_RULES, type SeaState } from "../data/seaStates.ts";
 
-[입력값]
-유저 입력: {user_input}
-현재 날짜와 시간: {current_datetime}
-위치 힌트: {location_hint}
+type BuildRadioLogPromptOptions = {
+  userInput: string;
+  currentDatetime: string;
+  locationHint: string;
+  selectedSeaState: SeaState;
+};
 
-[작업 지시]
-유저 입력을 바탕으로 짧은 무선 통신 로그를 작성한다. 글은 반드시 1인칭 시점으로 쓰며 화자는 언제나 “나”다. 화자는 망망대해 또는 해안에서 멀리 떨어진 곳에 표류 중이며 무전기를 통해 자신의 현재 상태를 기록한다. 일상적 표현과 표류·난파·해상·기상·무선 통신의 은유를 함께 사용한다. 감정은 날씨-감정 매핑을 참고해 SEA 코드로 분류한다. 문체는 차분하고 건조한 독백체이며 “~다”, “~했다”, “~으로 확인된다”로 끝낸다. 무미건조한 생존 보고서 안에 멈춘 상태를 실패로만 해석하지 않으려는 작은 자기 위안이 은근히 느껴지게 한다.
+function list(items: readonly string[]) {
+  return items.map((item) => `- ${item}`).join("\n");
+}
 
-[절대 규칙]
-1. 화자는 반드시 “나”다. 2. 특정 상대를 직접 부르지 않는다. 3. 편지처럼 쓰지 않는다. 4. 감정을 과장하지 않는다. 5. 직접적 위로·자기계발·교훈 문장을 쓰지 않는다. 6. “괜찮다”, “힘내라”, “희망을 가져라”를 쓰지 않는다. 7. 무선 통신 시작과 종료 멘트를 포함한다. 8. 지나치게 시적이지 않게 한다. 9. 3~5문장으로 쓴다. 10. 입력의 핵심 감정이나 상황을 반영한다.
+export function buildRadioLogPrompt({
+  userInput,
+  currentDatetime,
+  locationHint,
+  selectedSeaState,
+}: BuildRadioLogPromptOptions) {
+  return String.raw`
+[역할]
+사용자의 짧은 감정 입력을 망망대해에 표류 중인 사람이 무전기로 남기는 1인칭 통신 기록으로 변환한다. 감정을 해결하거나 위로하지 않고, 사용자의 현실을 난파와 표류의 세계관이 담담하게 받아 적게 한다.
 
-[날씨-감정 매핑]
-SEA-01 / 맑음, 바람 약함: 평온, 희망, 일상, 가벼운 만족
-SEA-02 / 약간 흐림, 바람 약함: 차분, 성찰, 고요, 생각 많음
-SEA-04 / 비 간헐, 잔물결: 그리움, 불확실함, 기다림, 미련
-SEA-06 / 완전 흐림, 잔물결: 우울, 내면 탐색, 낮은 에너지, 피로
-SEA-08 / 폭풍, 큰 파도: 공포, 분노, 압도감, 생존 본능, 사투
-SEA-10 / 완전 무풍, 물결 없음: 정적, 정체, 기묘함, 무기력, 아무것도 할 수 없음
+[입력]
+- 사용자 입력: ${JSON.stringify(userInput)}
+- 현재 날짜와 시간: ${currentDatetime}
+- 일반 위치 힌트: ${locationHint}
 
-[출력 포맷]
-로그 # {임의의 3자리 숫자}
-· 날짜 : {current_date}
-· 위치 좌표 : {location_coordinate}
-· 날씨 코드 : {SEA 코드} / {짧은 요약}
-[치직...] 수신 여부 불명. 여기는 망망대해.
-{1인칭 독백 3~5문장}
-응답 확인 불가. 기록은 남긴다. 통신 종료.
-신호 종료
-[통신 로그 저장됨 / {current_datetime}]
+[선택된 내부 해상]
+- code: ${selectedSeaState.code}
+- internalCondition: ${selectedSeaState.internalCondition}
+- waveAndVisibility: ${selectedSeaState.waveAndVisibility}
+- coreResponse: ${selectedSeaState.coreResponse.join(", ")}
+- variations: ${selectedSeaState.variations.join(", ")}
+- writingRules:
+${list(selectedSeaState.writingRules)}
+- soundTextures (선택 재료, 최대 하나): ${selectedSeaState.soundTextures.join(", ")}
+
+[운영 원칙]
+${list(SEA_OPERATION_RULES)}
+
+[작성 규칙]
+- 선택된 내부 해상 코드를 바꾸거나 다시 분류하지 않는다.
+- 철저히 “나”인 1인칭으로 쓰고, “너”나 “당신”을 부르거나 편지처럼 쓰지 않는다.
+- 차분하고 건조한 반말 보고체를 사용한다. 기본 종결은 “~다”, “~했다”, “~으로 확인된다”다.
+- 사용자 입력에 있는 현실적인 단어나 감각을 가능하면 하나 이상 보존하고, 해상 은유는 일부 문장에만 덧붙인다.
+- 사용자 입력에 없는 사건, 인물, 관계, 직업, 행동, 부상, 조난 사고, 구조 요청, 과거 기억, 미래 사건을 만들지 않는다.
+- 감정을 과장하거나 거대한 난파 서사로 확대하지 않는다. 정확한 좌표도 만들지 않는다.
+- 직접적인 위로, 교훈, 자기계발, “괜찮다”, “힘내라”, “희망을 가져라”를 쓰지 않는다.
+- 감정명은 가능하면 빛, 온도, 거리, 사물, 몸의 작은 감각, 장비 상태, 문장 리듬으로 보여준다.
+- 사운드 요소는 0~1개만 사용한다. 목록 문구를 그대로 복사할 필요는 없다.
+- 미세한 자기 위안은 SEA-05, SEA-06 또는 자연스러운 SEA-10 문맥에서만 사물이나 작은 행동으로 암시할 수 있다. 긍정 결론은 강제하지 않는다.
+- 시작 문구 1문장, 본문 3~5문장, 종료 문구 1문장으로 쓴다. SEA-08은 짧은 파편 3~5개를 허용한다.
+- 시작과 종료는 무선 통신 톤을 유지하되 상투 문구를 기계적으로 반복하지 않는다. 답장이나 구조를 요구하지 않고 같은 뜻의 종료 표현을 중복하지 않는다.
+
+[출력]
+아래 필드만 JSON으로 반환한다. 로그 번호, 날짜, 저장 시간, 위치, 해상 요약은 애플리케이션이 조립한다.
+- seaCode: 반드시 ${selectedSeaState.code}
+- openingLine: 무선 통신 시작 1문장
+- body: 본문 문자열 배열 3~5개
+- closingLine: 무선 통신 종료 1문장
 `;
+}

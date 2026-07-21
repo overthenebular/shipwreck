@@ -13,10 +13,14 @@ export function SignalInput({ onGenerate }: SignalInputProps) {
     event.preventDefault();
     if (!value.trim()) { setError("신호가 비어 있습니다."); return; }
     setError(""); setLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    await onGenerate(value.trim());
-    setLoading(false);
-    requestAnimationFrame(() => document.querySelector(".log-card")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+    try {
+      await onGenerate(value.trim());
+      requestAnimationFrame(() => document.querySelector(".log-card")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "신호 해석에 실패했습니다.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (

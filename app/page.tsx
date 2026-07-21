@@ -4,10 +4,21 @@ import { useState } from "react";
 import { Radar } from "@/components/Radar";
 import { RadioLogCard } from "@/components/RadioLogCard";
 import { SignalInput } from "@/components/SignalInput";
-import { generateRadioLog, type RadioLog } from "@/lib/generateRadioLog";
+import type { RadioLog } from "@/lib/radioLog";
 
 export default function Home() {
   const [log, setLog] = useState<RadioLog | null>(null);
+
+  async function generateWithAI(userInput: string) {
+    const response = await fetch("/api/radio-log", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userInput }),
+    });
+    const result = (await response.json()) as { log?: RadioLog; error?: string };
+    if (!response.ok || !result.log) throw new Error(result.error || "신호 해석에 실패했습니다.");
+    setLog(result.log);
+  }
 
   return (
     <main className="station-shell">
@@ -26,7 +37,7 @@ export default function Home() {
         </div>
 
         <Radar />
-        <SignalInput onGenerate={async (value) => setLog(generateRadioLog(value))} />
+        <SignalInput onGenerate={generateWithAI} />
         {log && <RadioLogCard log={log} />}
       </section>
 
