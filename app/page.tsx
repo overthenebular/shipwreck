@@ -66,19 +66,24 @@ export default function Home() {
       <div className="noise" aria-hidden="true" />
       <div className="equipment-frame">
         <header className="masthead">
-          <span className="brand-mark" aria-hidden="true">SW</span>
-          <p>SHIPWRECK / MIDNIGHT COASTAL RADIO STATION</p>
           <p className="frequency">FREQ. 27.185 MHz</p>
         </header>
 
         <div className="station">
           <section className="receiver-panel" aria-labelledby="station-title">
+            <div className="equipment-plate" aria-label="Shipwreck, Midnight Coastal Radio Station, model RX-01">
+              <strong>SHIPWRECK</strong>
+              <span>MIDNIGHT COASTAL RADIO STATION</span>
+              <small>MODEL / RX-01</small>
+            </div>
             <div className="receiver-header">
               <span>RADAR / RX</span>
-              <h1 id="station-title">심야 해안 통신소</h1>
               <span>CHANNEL 01 · OPEN</span>
             </div>
-            <p className="description"><span>오늘의 신호를 남겨주세요.</span>{" "}<span>닿지 못해도, 기록은 남습니다.</span></p>
+            <div className="intro">
+              <h1 id="station-title">심야 해안 통신소</h1>
+              <p className="description"><span>오늘의 신호를 남겨주세요.</span><span>닿지 못해도, 기록은 남습니다.</span></p>
+            </div>
             <Radar />
             <p className="receiver-status" role="status" aria-live="polite"><span className="status-dot" /><span key={receiverStatus} className="status-text">{receiverStatus}</span></p>
           </section>
