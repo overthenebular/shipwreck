@@ -13,7 +13,7 @@ const representativeCases = [
   ["그립다.", "SEA-04"],
   ["힘들지만 오늘은 버텨야 한다.", "SEA-05"],
   ["지쳤지만 아직 끝내지는 않았다.", "SEA-05"],
-  ["아무것도 하고 싶지 않다.", "SEA-06"],
+  ["아무것도 하고 싶지 않다.", "SEA-10"],
   ["마음이 계속 가라앉는다.", "SEA-06"],
   ["감당하기 벅차지만 정신은 붙들고 있다.", "SEA-07"],
   ["마음이 크게 흔들리지만 아직 말할 수 있다.", "SEA-07"],
@@ -24,6 +24,25 @@ const representativeCases = [
   ["아무 감정도 남아 있지 않다.", "SEA-10"],
   ["모든 게 끝났는데 이상할 만큼 조용하다.", "SEA-10"],
 ] as const;
+
+const requestedCases = [
+  ["아무것도 못하고 침대에만 있었다", "SEA-10"],
+  ["오래전 사람이 자꾸 생각난다", "SEA-04"],
+  ["오늘은 특별한 일 없이 그냥 편안했다", "SEA-01"],
+  ["생각이 많았지만 조용한 하루였다", "SEA-02"],
+  ["일이 너무 몰려서 숨이 막히고 불안했다", "SEA-08"],
+  ["예전 사람이 떠오른다", "SEA-04"],
+  ["연락은 안 하지만 자꾸 생각난다", "SEA-04"],
+  ["하루 종일 누워 있었다", "SEA-10"],
+] as const;
+
+describe("새 우선순위와 경계 사례", () => {
+  for (const [input, expected] of requestedCases) {
+    test(`${input} → ${expected}`, () => {
+      assert.equal(selectSeaState(input).code, expected);
+    });
+  }
+});
 
 describe("대표 짧은 입력의 내부 해상 선택", () => {
   for (const [input, expected] of representativeCases) {

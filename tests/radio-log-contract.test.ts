@@ -19,6 +19,9 @@ test("프롬프트에는 선택된 SEA 상태만 상세 전달한다", () => {
   assert.match(prompt, /맑음 · 바람 증가/);
   assert.doesNotMatch(prompt, /SEA-09/);
   assert.match(prompt, /정확한 좌표도 만들지 않는다/);
+  assert.match(prompt, /openingLine에서 SEA 코드를 다시 말하지 않는다/);
+  assert.match(prompt, /“나다”, “무전 넣는다”, “송신자다”/);
+  assert.match(prompt, /openingLine: 위 규칙을 지킨 무선 통신 시작 1~2문장/);
 });
 
 test("구조화 응답은 코드·본문 길이·필수 필드를 검증한다", () => {
