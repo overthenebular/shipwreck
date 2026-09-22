@@ -73,11 +73,12 @@ export default function Home() {
 
         <div className="station">
           <section className="receiver-panel" aria-labelledby="station-title">
-            <div className="panel-heading"><span>RADAR / RX</span><span>CHANNEL 01 · OPEN</span></div>
-            <div className="intro">
+            <div className="receiver-header">
+              <span>RADAR / RX</span>
               <h1 id="station-title">심야 해안 통신소</h1>
-              <p className="description">오늘의 신호를 남겨주세요.<br />닿지 못해도, 기록은 남습니다.</p>
+              <span>CHANNEL 01 · OPEN</span>
             </div>
+            <p className="description"><span>오늘의 신호를 남겨주세요.</span>{" "}<span>닿지 못해도, 기록은 남습니다.</span></p>
             <Radar />
             <p className="receiver-status" role="status" aria-live="polite"><span className="status-dot" /><span key={receiverStatus} className="status-text">{receiverStatus}</span></p>
           </section>

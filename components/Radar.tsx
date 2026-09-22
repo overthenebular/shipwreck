@@ -62,6 +62,7 @@ export function Radar() {
       <div className="radar" role="img" aria-label="신호를 탐색하며 천천히 회전하는 레이더">
         <div className="radar-ring ring-1" />
         <div className="radar-ring ring-2" />
+        <div className="radar-ring ring-3" />
         <div className="radar-cross horizontal" />
         <div className="radar-cross vertical" />
         <div
