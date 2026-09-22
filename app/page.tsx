@@ -8,7 +8,7 @@ import { useRadarAudio } from "@/hooks/useRadarAudio";
 import type { RadioLog } from "@/lib/radioLog";
 
 export default function Home() {
-  const { audioEnabled, toggleAudio, playSweepPip, playSignalBeep } = useRadarAudio();
+  const { audioEnabled, toggleAudio, volumeLevel, changeVolumeLevel, playSweepPip, playSignalBeep } = useRadarAudio();
   const [log, setLog] = useState<RadioLog | null>(null);
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
@@ -68,16 +68,21 @@ export default function Home() {
       <div className="noise" aria-hidden="true" />
       <div className="equipment-frame">
         <header className="masthead">
+          <div className="equipment-plate" aria-label="Shipwreck, Midnight Coastal Radio Station, model RX-01">
+            <strong>SHIPWRECK</strong>
+            <span>MIDNIGHT COASTAL RADIO STATION</span>
+            <small>MODEL / RX-01</small>
+          </div>
+          <div className="equipment-indicators" aria-hidden="true">
+            <span className="equipment-indicator is-on">POWER</span>
+            <span className={`equipment-indicator ${loading ? "is-on" : ""}`}>TX</span>
+            <span className={`equipment-indicator is-on ${phase === "received" || phase === "degraded" ? "is-received" : ""}`}>RX</span>
+          </div>
           <p className="frequency">FREQ. 27.185 MHz</p>
         </header>
 
         <div className="station">
           <section className="receiver-panel" aria-labelledby="station-title">
-            <div className="equipment-plate" aria-label="Shipwreck, Midnight Coastal Radio Station, model RX-01">
-              <strong>SHIPWRECK</strong>
-              <span>MIDNIGHT COASTAL RADIO STATION</span>
-              <small>MODEL / RX-01</small>
-            </div>
             <div className="receiver-header">
               <span>RADAR / RX</span>
               <span>CHANNEL 01 · OPEN</span>
@@ -90,11 +95,11 @@ export default function Home() {
           </section>
 
           <section className="transmission-panel" aria-label="통신 입력 및 기록">
-            <div className="input-panel">
+            <div className="input-panel" data-phase={phase}>
               <div className="panel-heading"><span>TRANSMISSION / TX</span><span>CHANNEL 01</span></div>
               <SignalInput value={value} onValueChange={updateValue} onGenerate={submitSignal} loading={loading} error={error} />
             </div>
-            <RadioLogCard log={log} phase={phase} audioEnabled={audioEnabled} onToggleAudio={toggleAudio} />
+            <RadioLogCard log={log} phase={phase} audioEnabled={audioEnabled} onToggleAudio={toggleAudio} volumeLevel={volumeLevel} onVolumeChange={changeVolumeLevel} />
           </section>
         </div>
 

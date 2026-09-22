@@ -19,10 +19,15 @@ export function SignalInput({ value, onValueChange, onGenerate, loading, error }
   return (
     <form className="signal-form" onSubmit={submit}>
       <div className="field-heading"><label htmlFor="signal">TRANSMISSION INPUT</label><span>MAX 280</span></div>
-      <textarea id="signal" value={value} maxLength={280} onChange={(e) => onValueChange(e.target.value)} placeholder="오늘의 감정이나 상태를 한 단어 또는 한 문장으로 입력하세요." aria-describedby="signal-message signal-count" disabled={loading} />
+      <div className="input-window">
+        <textarea id="signal" value={value} maxLength={280} onChange={(e) => onValueChange(e.target.value)} placeholder="오늘의 감정이나 상태를 한 단어 또는 한 문장으로 입력하세요." aria-describedby="signal-message signal-count" disabled={loading} />
+      </div>
       <div className="form-row">
         <p id="signal-count" className="character-count">{String(value.length).padStart(3, "0")} / 280</p>
-        <button type="submit" disabled={loading}><span aria-hidden="true">◉</span>{loading ? "신호 해석 중..." : "신호 보내기"}</button>
+        <div className="transmit-switch">
+          <span className="transmit-label" aria-hidden="true">TX / SEND</span>
+          <button type="submit" disabled={loading}><span className="transmit-lamp" aria-hidden="true" />{loading ? "신호 해석 중..." : "신호 보내기"}</button>
+        </div>
       </div>
       <p id="signal-message" className={error ? "form-message error" : "form-message"} aria-live="polite">{error || (loading ? "주파수를 맞추고 있습니다." : "\u00a0")}</p>
     </form>

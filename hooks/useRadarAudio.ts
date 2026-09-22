@@ -6,9 +6,13 @@ const PIP_FREQUENCY_HZ = 420;
 const PIP_DURATION_SECONDS = 0.045;
 const SIGNAL_FREQUENCY_HZ = 760;
 const SIGNAL_DURATION_SECONDS = 0.07;
+const DEFAULT_LEVEL = 5;
+const GAIN_PER_LEVEL = 0.032;
 
 export function useRadarAudio() {
   const [audioEnabled, setAudioEnabled] = useState(false);
+  const [volumeLevel, setVolumeLevel] = useState(DEFAULT_LEVEL);
+  const volumeLevelRef = useRef(DEFAULT_LEVEL);
   const audioEnabledRef = useRef(false);
   const audioStartingRef = useRef(false);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -62,6 +66,17 @@ export function useRadarAudio() {
     }
   }, [stopAudio]);
 
+  function changeVolumeLevel(nextLevel: number) {
+    const level = Math.max(0, Math.min(10, Math.round(nextLevel)));
+    volumeLevelRef.current = level;
+    setVolumeLevel(level);
+    const context = audioContextRef.current;
+    const masterGain = masterGainRef.current;
+    if (context && masterGain && context.state !== "closed") {
+      masterGain.gain.setTargetAtTime(level * GAIN_PER_LEVEL, context.currentTime, 0.02);
+    }
+  }
+
   async function toggleAudio() {
     if (audioStartingRef.current) return;
     if (audioEnabledRef.current) {
@@ -75,7 +90,7 @@ export function useRadarAudio() {
       const context = new AudioContext();
       audioContextRef.current = context;
       const masterGain = context.createGain();
-      masterGain.gain.value = 0.16;
+      masterGain.gain.value = volumeLevelRef.current * GAIN_PER_LEVEL;
       masterGain.connect(context.destination);
       masterGainRef.current = masterGain;
       if (context.state === "suspended") await context.resume();
@@ -100,5 +115,5 @@ export function useRadarAudio() {
     playTone(SIGNAL_FREQUENCY_HZ, SIGNAL_DURATION_SECONDS, weak ? 0.055 : 0.085);
   }, [playTone]);
 
-  return { audioEnabled, toggleAudio, playSweepPip, playSignalBeep };
+  return { audioEnabled, toggleAudio, volumeLevel, changeVolumeLevel, playSweepPip, playSignalBeep };
 }
