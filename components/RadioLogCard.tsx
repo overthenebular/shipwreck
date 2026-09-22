@@ -1,21 +1,32 @@
 import type { RadioLog } from "@/lib/radioLog";
 
-export function RadioLogCard({ log }: { log: RadioLog }) {
+type DisplayPhase = "idle" | "transmitting" | "decoding" | "received" | "degraded";
+
+export function RadioLogCard({ log, phase }: { log: RadioLog | null; phase: DisplayPhase }) {
+  const isProcessing = phase === "transmitting" || phase === "decoding";
+  const visibleLog = isProcessing ? null : log;
+
   return (
-    <article className="log-card" aria-live="polite">
-      <header><p>RECEIVED TRANSMISSION</p><span>ARCHIVE / {log.number}</span></header>
+    <article className="log-card" aria-label="수신된 통신 기록">
+      <header><p>RECEIVED TRANSMISSION</p><span>ARCHIVE / {visibleLog?.number ?? "---"}</span></header>
       <div className="log-meta">
-        <p>로그 # {log.number}</p>
-        <p>· 날짜 : {log.date}</p>
-        <p>· {log.coordinate ? "위치 좌표" : "추정 위치"} : {log.coordinate ?? log.locationHint}</p>
-        <p>· 내부 해상 : {log.code} / {log.summary}</p>
+        <p>LOG # <span>{visibleLog?.number ?? "---"}</span></p>
+        <p>DATE <span>{visibleLog?.date ?? "---"}</span></p>
+        <p>POSITION <span>{visibleLog ? visibleLog.coordinate ?? visibleLog.locationHint : "---"}</span></p>
+        <p>SEA STATE <span>{visibleLog ? `${visibleLog.code} / ${visibleLog.summary}` : "---"}</span></p>
       </div>
-      <div className="log-body">
-        <p className="static">{log.openingLine}</p>
-        {log.body.map((line, index) => <p key={`${index}-${line}`}>{line}</p>)}
-        <p>{log.closingLine}</p>
+      <div className="log-body" aria-live="polite">
+        {visibleLog ? (
+          <div className="log-transcript">
+            <p className="static">{visibleLog.openingLine}</p>
+            {visibleLog.body.map((line, index) => <p key={`${index}-${line}`}>{line}</p>)}
+            <p>{visibleLog.closingLine}</p>
+          </div>
+        ) : (
+          <p className="log-placeholder">{isProcessing ? "DECODING TRANSMISSION..." : phase === "degraded" ? "SIGNAL DEGRADED" : "AWAITING TRANSMISSION"}</p>
+        )}
       </div>
-      <footer><p>[통신 로그 저장됨 / {log.datetime}]</p></footer>
+      <footer><p>{visibleLog ? `${visibleLog.generationMode === "fallback" ? "SIGNAL DEGRADED" : "LOG RECEIVED"} / ${visibleLog.datetime}` : `STATUS / ${isProcessing ? "DECODING" : phase === "degraded" ? "SIGNAL DEGRADED" : "STANDBY"}`}</p></footer>
     </article>
   );
 }
