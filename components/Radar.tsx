@@ -59,30 +59,38 @@ export function Radar() {
 
   return (
     <div className="radar-block">
-      <div className="radar" role="img" aria-label="신호를 탐색하며 천천히 회전하는 레이더">
-        <div className="radar-ring ring-1" />
-        <div className="radar-ring ring-2" />
-        <div className="radar-ring ring-3" />
-        <div className="radar-cross horizontal" />
-        <div className="radar-cross vertical" />
-        <div
-          className="radar-sweep"
-          style={{ animationDuration: `${SWEEP_DURATION_MS}ms` }}
-          onAnimationIteration={startNextSweep}
-        />
-        {signals.map((signal) => (
-          <span
-            key={signal.id}
-            className={signal.weak ? "signal signal--weak" : "signal"}
-            style={{
-              left: `${signal.x}%`,
-              top: `${signal.y}%`,
-              animationDelay: `${signal.delayMs}ms`,
-              animationDuration: `${signal.fadeMs}ms`,
-            }}
+      <div className="radar-dial">
+        <div className="radar" role="img" aria-label="신호를 탐색하며 천천히 회전하는 레이더">
+          <div className="radar-ring ring-1" />
+          <div className="radar-ring ring-2" />
+          <div className="radar-ring ring-3" />
+          <div className="radar-cross horizontal" />
+          <div className="radar-cross vertical" />
+          <div
+            className="radar-sweep"
+            style={{ animationDuration: `${SWEEP_DURATION_MS}ms` }}
+            onAnimationIteration={startNextSweep}
           />
-        ))}
-        <span className="radar-center" />
+          {signals.map((signal) => (
+            <span
+              key={signal.id}
+              className={signal.weak ? "signal signal--weak" : "signal"}
+              style={{
+                left: `${signal.x}%`,
+                top: `${signal.y}%`,
+                animationDelay: `${signal.delayMs}ms`,
+                animationDuration: `${signal.fadeMs}ms`,
+              }}
+            />
+          ))}
+          <span className="radar-center" />
+        </div>
+        <div className="radar-compass" aria-hidden="true">
+          <span className="radar-compass-n">N</span>
+          <span className="radar-compass-e">E</span>
+          <span className="radar-compass-s">S</span>
+          <span className="radar-compass-w">W</span>
+        </div>
       </div>
       <div className="radar-readout" aria-hidden="true">
         <span>RANGE 40 NM</span><span>SWEEP 06 RPM</span>

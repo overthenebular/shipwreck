@@ -217,18 +217,33 @@ button, textarea { font: inherit; }
   text-shadow: 0 1px #03090b, 0 0 5px rgba(103, 218, 208, .25);
 }
 .receiver-header span:last-child { color: #6d9d9a; }
-.intro { margin-top: 12px; text-align: center; }
+.intro { flex-shrink: 0; margin: 12px 0 26px; text-align: center; }
 h1 { margin: 0; color: #bdded8; font-size: clamp(26px, 2.3vw, 34px); font-weight: 300; letter-spacing: -.035em; line-height: 1.1; white-space: nowrap; text-shadow: 0 0 10px rgba(93, 213, 202, .1); }
 .description { margin: 12px 0 0; color: #86b1ab; font-size: 13px; line-height: 1.35; letter-spacing: .005em; }
 .description span { display: block; }
 .description span + span { margin-top: 1px; }
 
-.radar-block { width: min(100%, 68vh, calc(100svh - 315px), 720px); margin: auto auto 0; }
+.radar-block { flex-shrink: 0; width: min(100%, 68vh, calc(100svh - 350px), 720px); margin: auto auto 0; }
+.radar-dial { position: relative; }
+.radar-compass { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+.radar-compass span {
+  position: absolute;
+  color: #9cbbb5;
+  font: 10px/1 var(--font-geist-mono), monospace;
+  letter-spacing: .04em;
+  text-shadow: 0 1px #030b0d;
+}
+.radar-compass-n, .radar-compass-s { left: 50%; transform: translateX(-50%); }
+.radar-compass-n { top: -20px; }
+.radar-compass-s { bottom: -20px; }
+.radar-compass-e, .radar-compass-w { top: 50%; transform: translateY(-50%); }
+.radar-compass-e { right: -20px; }
+.radar-compass-w { left: -20px; }
 .radar {
   position: relative;
   aspect-ratio: 1;
   overflow: hidden;
-  border: 1px solid rgba(123, 224, 214, .57);
+  border: 2px solid rgba(150, 219, 211, .68);
   border-radius: 50%;
   background:
     linear-gradient(0deg, transparent calc(50% - .5px), rgba(78, 168, 161, .1) 50%, transparent calc(50% + .5px)),
@@ -236,9 +251,11 @@ h1 { margin: 0; color: #bdded8; font-size: clamp(26px, 2.3vw, 34px); font-weight
   box-shadow:
     inset 0 0 52px rgba(0, 0, 0, .55),
     inset 0 0 20px rgba(76, 197, 184, .12),
+    inset 0 0 0 1px rgba(177, 224, 217, .12),
     0 0 0 3px #101e22,
-    0 0 0 4px rgba(153, 176, 174, .34),
+    0 0 0 4px rgba(153, 176, 174, .46),
     0 0 0 7px #0a161a,
+    0 0 0 8px rgba(114, 157, 154, .18),
     0 0 27px rgba(99, 231, 218, .07);
 }
 .radar::before {
@@ -501,7 +518,7 @@ button:disabled { opacity: .58; cursor: wait; }
 @media (max-height: 620px) and (min-width: 701px) {
   .station-shell { height: auto; min-height: 620px; }
   .equipment-frame { height: 620px; }
-  .radar-block, .receiver-status { width: min(100%, calc(100svh - 280px), 320px); }
+  .radar-block, .receiver-status { width: min(100%, calc(100svh - 280px), 300px); }
   .signal-form { margin-top: 12px; }
 }
 
