@@ -2,7 +2,12 @@ import type { RadioLog } from "@/lib/radioLog";
 
 type DisplayPhase = "idle" | "transmitting" | "decoding" | "received" | "degraded";
 
-export function RadioLogCard({ log, phase }: { log: RadioLog | null; phase: DisplayPhase }) {
+export function RadioLogCard({ log, phase, audioEnabled, onToggleAudio }: {
+  log: RadioLog | null;
+  phase: DisplayPhase;
+  audioEnabled: boolean;
+  onToggleAudio: () => void;
+}) {
   const isProcessing = phase === "transmitting" || phase === "decoding";
   const visibleLog = isProcessing ? null : log;
 
@@ -26,7 +31,18 @@ export function RadioLogCard({ log, phase }: { log: RadioLog | null; phase: Disp
           <p className="log-placeholder">{isProcessing ? "DECODING TRANSMISSION..." : phase === "degraded" ? "SIGNAL DEGRADED" : "AWAITING TRANSMISSION"}</p>
         )}
       </div>
-      <footer><p>{visibleLog ? `${visibleLog.generationMode === "fallback" ? "SIGNAL DEGRADED" : "LOG RECEIVED"} / ${visibleLog.datetime}` : `STATUS / ${isProcessing ? "DECODING" : phase === "degraded" ? "SIGNAL DEGRADED" : "STANDBY"}`}</p></footer>
+      <footer>
+        <p>{visibleLog ? `${visibleLog.generationMode === "fallback" ? "SIGNAL DEGRADED" : "LOG RECEIVED"} / ${visibleLog.datetime}` : `STATUS / ${isProcessing ? "DECODING" : phase === "degraded" ? "SIGNAL DEGRADED" : "STANDBY"}`}</p>
+        <button
+          className="radar-audio-toggle"
+          type="button"
+          aria-label={audioEnabled ? "레이더 오디오 끄기" : "레이더 오디오 켜기"}
+          aria-pressed={audioEnabled}
+          onClick={onToggleAudio}
+        >
+          AUDIO / {audioEnabled ? "ON" : "OFF"}
+        </button>
+      </footer>
     </article>
   );
 }

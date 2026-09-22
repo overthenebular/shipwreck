@@ -223,7 +223,25 @@ h1 { margin: 0; color: #bdded8; font-size: clamp(26px, 2.3vw, 34px); font-weight
 .description span { display: block; }
 .description span + span { margin-top: 1px; }
 
-.radar-block { flex-shrink: 0; width: min(100%, 68vh, calc(100svh - 350px), 720px); margin: auto auto 0; }
+.radar-block { position: relative; flex-shrink: 0; width: min(100%, 68vh, calc(100svh - 350px), 720px); margin: auto auto 0; }
+.radar-audio-toggle {
+  flex: none;
+  min-height: 18px;
+  padding: 2px 7px;
+  border: 1px solid rgba(99, 138, 135, .24);
+  background: linear-gradient(#101f22, #081417);
+  box-shadow: inset 0 1px rgba(171, 211, 202, .04), inset 0 -1px rgba(0, 0, 0, .5);
+  color: #9bbdb7;
+  font: 9px/1.1 var(--font-geist-mono), monospace;
+  letter-spacing: .1em;
+}
+.radar-audio-toggle[aria-pressed="true"] { border-color: rgba(112, 156, 150, .38); color: #b5d2c9; }
+.radar-audio-toggle:hover:not(:disabled), .radar-audio-toggle:focus-visible {
+  border-color: rgba(149, 194, 184, .5);
+  background: #16292d;
+  box-shadow: inset 0 1px rgba(171, 211, 202, .08);
+}
+.radar-audio-toggle:focus-visible { outline: 1px solid #a5d1cb; outline-offset: 2px; }
 .radar-dial { position: relative; }
 .radar-compass { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
 .radar-compass span {
@@ -318,8 +336,8 @@ h1 { margin: 0; color: #bdded8; font-size: clamp(26px, 2.3vw, 34px); font-weight
   display: flex;
   align-items: center;
   gap: 9px;
-  width: min(100%, 68vh, calc(100svh - 315px), 720px);
   min-height: 15px;
+  min-width: 0;
   margin: 6px 0 0;
   color: #94c9c2;
   font: 10px var(--font-geist-mono), monospace;
@@ -448,6 +466,7 @@ button:disabled { opacity: .58; cursor: wait; }
 .log-card > header { border-bottom: 1px solid rgba(103, 179, 173, .28); background: linear-gradient(#203034, #101f23); box-shadow: inset 0 1px rgba(202, 221, 215, .06), inset 0 -2px rgba(0, 0, 0, .38); }
 .log-card > header span { color: #729e9a; }
 .log-card > footer { border-top: 1px solid rgba(103, 179, 173, .28); color: #85b8b1; background: repeating-linear-gradient(90deg, rgba(185, 198, 194, .025) 0 1px, transparent 1px 7px), linear-gradient(#19292d, #0d1b1f); box-shadow: inset 0 2px rgba(0, 0, 0, .36); }
+.log-card > footer p { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .log-card p { margin: 0; }
 .log-meta {
   display: grid;
@@ -485,7 +504,7 @@ button:disabled { opacity: .58; cursor: wait; }
 @media (max-width: 950px) {
   .station { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .receiver-panel, .input-panel { padding: 22px; }
-  .radar-block, .receiver-status { width: min(100%, 60vh, calc(100svh - 320px), 470px); }
+  .radar-block { width: min(100%, 60vh, calc(100svh - 320px), 470px); }
   h1 { font-size: clamp(24px, 2.4vw, 29px); }
   .log-card > header, .log-card > footer { padding: 0 22px; }
   .log-meta, .log-body { padding-left: 22px; padding-right: 22px; }
@@ -502,7 +521,7 @@ button:disabled { opacity: .58; cursor: wait; }
   .intro { margin-top: 15px; }
   h1 { font-size: clamp(27px, 7vw, 34px); }
   .radar-block { width: min(84vw, 430px); margin: 24px auto 0; }
-  .receiver-status { width: min(84vw, 430px); margin-top: 18px; }
+  .receiver-status { margin-top: 18px; }
   .transmission-panel { grid-template-rows: auto minmax(400px, auto); }
   .input-panel { padding: 23px 20px 29px; }
   .signal-form { margin-top: 21px; }
@@ -518,7 +537,7 @@ button:disabled { opacity: .58; cursor: wait; }
 @media (max-height: 620px) and (min-width: 701px) {
   .station-shell { height: auto; min-height: 620px; }
   .equipment-frame { height: 620px; }
-  .radar-block, .receiver-status { width: min(100%, calc(100svh - 280px), 300px); }
+  .radar-block { width: min(100%, calc(100svh - 280px), 300px); }
   .signal-form { margin-top: 12px; }
 }
 

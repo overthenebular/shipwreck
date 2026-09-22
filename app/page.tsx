@@ -4,9 +4,11 @@ import { useState } from "react";
 import { Radar } from "@/components/Radar";
 import { RadioLogCard } from "@/components/RadioLogCard";
 import { SignalInput } from "@/components/SignalInput";
+import { useRadarAudio } from "@/hooks/useRadarAudio";
 import type { RadioLog } from "@/lib/radioLog";
 
 export default function Home() {
+  const { audioEnabled, toggleAudio, playSweepPip, playSignalBeep } = useRadarAudio();
   const [log, setLog] = useState<RadioLog | null>(null);
   const [value, setValue] = useState("");
   const [error, setError] = useState("");
@@ -84,8 +86,7 @@ export default function Home() {
               <h1 id="station-title">심야 해안 통신소</h1>
               <p className="description"><span>오늘의 신호를 남겨주세요.</span><span>닿지 못해도, 기록은 남습니다.</span></p>
             </div>
-            <Radar />
-            <p className="receiver-status" role="status" aria-live="polite"><span className="status-dot" /><span key={receiverStatus} className="status-text">{receiverStatus}</span></p>
+            <Radar receiverStatus={receiverStatus} onSweep={playSweepPip} onSignalDetected={playSignalBeep} />
           </section>
 
           <section className="transmission-panel" aria-label="통신 입력 및 기록">
@@ -93,7 +94,7 @@ export default function Home() {
               <div className="panel-heading"><span>TRANSMISSION / TX</span><span>CHANNEL 01</span></div>
               <SignalInput value={value} onValueChange={updateValue} onGenerate={submitSignal} loading={loading} error={error} />
             </div>
-            <RadioLogCard log={log} phase={phase} />
+            <RadioLogCard log={log} phase={phase} audioEnabled={audioEnabled} onToggleAudio={toggleAudio} />
           </section>
         </div>
 

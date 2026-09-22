@@ -43,9 +43,14 @@ function createSignals(cycle: number): Signal[] {
   return next;
 }
 
-export function Radar() {
+export function Radar({ receiverStatus, onSweep, onSignalDetected }: {
+  receiverStatus: string;
+  onSweep: () => void;
+  onSignalDetected: (weak: boolean) => void;
+}) {
   const cycleRef = useRef(0);
   const [signals, setSignals] = useState<Signal[]>([]);
+  const soundedSignalsRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => setSignals(createSignals(cycleRef.current)));
@@ -53,8 +58,16 @@ export function Radar() {
   }, []);
 
   function startNextSweep() {
+    onSweep();
     cycleRef.current += 1;
+    soundedSignalsRef.current.clear();
     setSignals(createSignals(cycleRef.current));
+  }
+
+  function detectSignal(signal: Signal) {
+    if (soundedSignalsRef.current.has(signal.id)) return;
+    soundedSignalsRef.current.add(signal.id);
+    onSignalDetected(signal.weak);
   }
 
   return (
@@ -75,6 +88,9 @@ export function Radar() {
             <span
               key={signal.id}
               className={signal.weak ? "signal signal--weak" : "signal"}
+              onAnimationStart={(event) => {
+                if (event.animationName === "signal-echo") detectSignal(signal);
+              }}
               style={{
                 left: `${signal.x}%`,
                 top: `${signal.y}%`,
@@ -95,6 +111,9 @@ export function Radar() {
       <div className="radar-readout" aria-hidden="true">
         <span>RANGE 40 NM</span><span>SWEEP 06 RPM</span>
       </div>
+      <p className="receiver-status" role="status" aria-live="polite">
+        <span className="status-dot" /><span key={receiverStatus} className="status-text">{receiverStatus}</span>
+      </p>
     </div>
   );
 }
